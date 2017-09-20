@@ -1,10 +1,5 @@
-# JKitchen
-* This is an app for viewing menus and making meal orders.
-
-
-[![Build Status](https://travis-ci.org/andela-joladimeji/jkitchen.svg?branch=master)](https://travis-ci.org/andela-joladimeji/jkitchenAPI)
-
-[![Coverage Status](https://coveralls.io/repos/github/andela-joladimeji/jkitchen/badge.svg?branch=master)](https://coveralls.io/github/andela-joladimeji/jkitchenAPI?branch=master)
+# JKitchenAPI
+* API for jkitchen app
 
 
 ## Tools Used
