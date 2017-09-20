@@ -1,1 +1,2 @@
 dev_db=dialect://hostname:PORT/db_name
+coveralls_token=generated_coveralls_token

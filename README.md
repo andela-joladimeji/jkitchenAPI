@@ -2,6 +2,10 @@
 * API for jkitchen app
 
 
+[![Build Status](https://travis-ci.org/andela-joladimeji/jkitchenAPI.svg?branch=master)](https://travis-ci.org/andela-joladimeji/jkitchenAPI)
+
+[![Coverage Status](https://coveralls.io/repos/github/andela-joladimeji/jkitchenAPI/badge.svg?branch=master)](https://coveralls.io/github/andela-joladimeji/jkitchenAPI?branch=master)
+
 ## Tools Used
 | **Dependency** | **Use** |
 |----------|-------|
