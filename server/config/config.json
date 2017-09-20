@@ -1,0 +1,9 @@
+{
+  "development": {
+    "use_env_variable": "db_url"
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL"
+  }
+}
+
