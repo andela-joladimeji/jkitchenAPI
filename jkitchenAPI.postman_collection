@@ -52,13 +52,13 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/meals",
+			"url": "localhost:3000/api/v1/meals",
+			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "title",
@@ -90,16 +90,15 @@
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Get All Meals",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839889345,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065091028,
+			"name": "Get All Meals",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "40da448c-101d-9590-1923-aca08fcde161",
@@ -112,61 +111,175 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/user/signup",
+			"url": "localhost:3000/api/v1/user/signup",
+			"folder": "a9d736fe-541f-1e2f-5556-2394b6f1500d",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "email",
-					"value": "jumeyu@yahoo.com",
+					"value": "jumey@yahoo.com",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "name",
-					"value": "jumeyu",
+					"value": "jumey",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "password",
-					"value": "jumeyu",
+					"value": "jumey",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "phoneNumber",
-					"value": "08029036",
+					"value": "0802903",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "username",
-					"value": "jumeyu",
+					"value": "jumey",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "user signup",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839739193,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "a9d736fe-541f-1e2f-5556-2394b6f1500d"
+			"time": 1506065111162,
+			"name": "user signup",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": [
+				{
+					"status": "",
+					"responseCode": {
+						"code": 200,
+						"name": "OK",
+						"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+					},
+					"time": 464,
+					"headers": [
+						{
+							"name": "connection",
+							"key": "connection",
+							"value": "keep-alive",
+							"description": "Options that are desired for the connection"
+						},
+						{
+							"name": "content-length",
+							"key": "content-length",
+							"value": "303",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"name": "content-type",
+							"key": "content-type",
+							"value": "application/json; charset=utf-8",
+							"description": "The mime type of this content"
+						},
+						{
+							"name": "date",
+							"key": "date",
+							"value": "Thu, 21 Sep 2017 17:06:07 GMT",
+							"description": "The date and time that the message was sent"
+						},
+						{
+							"name": "etag",
+							"key": "etag",
+							"value": "W/\"12f-6uVmvFRLLh5/87C27MdnVQ\"",
+							"description": "An identifier for a specific version of a resource, often a message digest"
+						},
+						{
+							"name": "x-powered-by",
+							"key": "x-powered-by",
+							"value": "Express",
+							"description": "Specifies the technology (ASP.NET, PHP, JBoss, e.g.) supporting the web application (version details are often in X-Runtime, X-Version, or X-AspNet-Version)"
+						}
+					],
+					"cookies": [],
+					"mime": "",
+					"text": "{\"role\":\"user\",\"id\":120,\"name\":\"jumey\",\"username\":\"jumey\",\"email\":\"jumey@yahoo.com\",\"phoneNumber\":\"0802903\",\"socialMediaLinks\":null,\"hashedPassword\":\"$2a$12$BgIc7QiackCLilmKxX9HcOgD3vxLYGMQ04O7Ey5/skPDT1d/CbZ2O\",\"updatedAt\":\"2017-09-21T17:06:07.529Z\",\"createdAt\":\"2017-09-21T17:06:07.529Z\",\"image\":null}",
+					"language": "json",
+					"rawDataType": "text",
+					"previewType": "text",
+					"searchResultScrolledTo": -1,
+					"forceNoPretty": false,
+					"write": true,
+					"empty": false,
+					"failed": false,
+					"name": "user signup",
+					"id": "87d482db-b95a-06ad-92e5-4f7a60eabc93",
+					"request": {
+						"url": "localhost:3000/api/v1/user/signup",
+						"pathVariables": {},
+						"pathVariableData": [],
+						"queryParams": [],
+						"headerData": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": "",
+								"enabled": true
+							}
+						],
+						"headers": "Content-Type: application/x-www-form-urlencoded\n",
+						"data": [
+							{
+								"key": "email",
+								"value": "jumey@yahoo.com",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							},
+							{
+								"key": "name",
+								"value": "jumey",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							},
+							{
+								"key": "password",
+								"value": "jumey",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							},
+							{
+								"key": "phoneNumber",
+								"value": "0802903",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							},
+							{
+								"key": "username",
+								"value": "jumey",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							}
+						],
+						"method": "POST",
+						"dataMode": "urlencoded"
+					}
+				}
+			]
 		},
 		{
 			"id": "518aa7f8-340c-5694-f6fd-af2d674df60f",
@@ -179,40 +292,39 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/user/signin",
+			"url": "localhost:3000/api/v1/user/signin",
+			"folder": "a9d736fe-541f-1e2f-5556-2394b6f1500d",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "email",
-					"value": "jumeyu@yahoo.com",
+					"value": "jumey@yahoo.com",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "password",
-					"value": "jumeyu",
+					"value": "jumey",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "user signin",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839755124,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "a9d736fe-541f-1e2f-5556-2394b6f1500d"
+			"time": 1506065106356,
+			"name": "user signin",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "7718627c-0874-feb0-95f4-012d6524edbb",
@@ -225,13 +337,13 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/meals/67",
+			"url": "localhost:3000/api/v1/meals/80",
+			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "DELETE",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "title",
@@ -263,16 +375,15 @@
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Delete One Meal",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839867852,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065094922,
+			"name": "Delete One Meal",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "82149134-1b75-d5de-4bc6-f40f78b94fce",
@@ -285,13 +396,12 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/meals/89",
+			"url": "localhost:3000/api/v1/meals/463",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "PUT",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "title",
@@ -302,7 +412,7 @@
 				},
 				{
 					"key": "price",
-					"value": "125",
+					"value": "1",
 					"description": "",
 					"type": "text",
 					"enabled": true
@@ -323,16 +433,15 @@
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Update Meal",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839815682,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065100373,
+			"name": "Update Meal",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "9c22e981-e0ae-3196-c375-57d16783396c",
@@ -345,54 +454,31 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/v1/meals/200",
+			"url": "localhost:3000/api/v1/users/14/meals/200/ratings",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
-			"method": "GET",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"method": "POST",
 			"data": [
 				{
-					"key": "title",
-					"value": "Bread and ewa",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "price",
-					"value": "125",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "available_quantity",
-					"value": "46",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "image",
-					"value": "http://zeeliciousfoods.com/wp-content/uploads/2016/11/Beans-and-Plantain-2.jpg",
+					"key": "ratings",
+					"value": "3",
 					"description": "",
 					"type": "text",
 					"enabled": true
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Rate a Meal",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505903975721,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065088217,
+			"name": "Rate a Meal",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "a30f7a86-0616-90f5-97ce-cefbd25a2b36",
@@ -405,13 +491,13 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/meals/67",
+			"url": "localhost:3000/api/v1/meals/68",
+			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "title",
@@ -443,16 +529,15 @@
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Get One Meal",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839848354,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065097805,
+			"name": "Get One Meal",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		},
 		{
 			"id": "f87ef04d-fb5a-97ff-a655-df717bb38df5",
@@ -465,13 +550,13 @@
 					"enabled": true
 				}
 			],
-			"url": "localhost:3000/api/meals",
+			"url": "localhost:3000/api/v1/meals",
+			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
 			"data": [
 				{
 					"key": "title",
@@ -503,16 +588,15 @@
 				}
 			],
 			"dataMode": "urlencoded",
-			"name": "Create Meal",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1505839778426,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "3a5b1ed3-d8c1-9e6b-23f8-5ca6fc22f227"
+			"time": 1506065103399,
+			"name": "Create Meal",
+			"description": "",
+			"collectionId": "763fc56c-fc2c-22e5-99b4-f250ad8ef4a4",
+			"responses": []
 		}
 	]
 }
