@@ -11,15 +11,15 @@ module.exports = {
       excerpt: req.body.excerpt,
       imageURL: req.body.imageURL,
       userId: req.params.userId
-    }
-    if(req.body.type) {
-      newArticle.type = req.body.type;      
+    };
+    if (req.body.type) {
+      newArticle.type = req.body.type;     
     }
     return Article
       .create(newArticle)
-      .then((article) => res.status(200).send(article))
+      .then(article => res.status(200).send(article))
       .catch((error) => {
-        res.status(500).send(error)
+        res.status(500).send(error);
       });
   },
 

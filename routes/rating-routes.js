@@ -1,4 +1,4 @@
-const rateController = require('../../server/controllers/rating')
+const rateController = require('../controllers/rating')
 
 module.exports = (app) => {
   app.post('/api/v1/users/:userId/meals/:mealId/ratings', rateController.rateMeal);

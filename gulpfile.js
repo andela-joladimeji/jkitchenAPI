@@ -8,11 +8,11 @@ gulp.task('serve', () => {
 });
 
 
-gulp.task('server-test', () => {
-    return gulp.src('server/**/*.js')
+gulp.task('test', () => {
+    return gulp.src(['controllers/*.js', 'models/*.js'])
        .pipe(istanbul())
         .on('end', () => {
-            gulp.src('tests/server/*.js')
+            gulp.src('tests/**/*.js')
                 .pipe(gulpMocha({
                   reporter: 'spec'
                 }))

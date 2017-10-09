@@ -1,8 +1,9 @@
 const Meal = require('../models').Meal;
 const redis = require('redis');
-let client
+
+let client;
 if (process.env.REDIS_URL) {
-  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+  client = redis.createClient(process.env.REDIS_URL, { no_ready_check: true });
 } else {
   client = redis.createClient();
 }
@@ -10,9 +11,17 @@ const Rating = require('../models').Rating;
 const Comment = require('../models').Comment;
 const MealOrderDetail = require('../models').MealOrderDetail
 
-module.exports = {
+module.exports = { 
+    /**
+  * @description - Creates a new meal
+  * @param {object} request - request object containing the meal title, price,available_quantity,image,
+  * description received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} meal - new meal created
+  */
   // Only admin can create and update meal
   create (req, res) {
+    console.log(req.body)
     Meal
       .create({
         title: req.body.title,
@@ -26,6 +35,13 @@ module.exports = {
         res.status(500).send({message: error})
       });
   },
+
+  /**
+  * @description - Fetches all meals
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} meals - meals fetched
+  */
 
   list (req, res) {
     Meal
@@ -41,7 +57,12 @@ module.exports = {
         res.status(500).send({message: error})
       });
   },
-
+  /**
+  * @description - Fetches a meal
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} meal - fetched meal
+  */
   getOne (req, res) {
     const mealId = req.params.mealId
     // get meal from redis cache
@@ -96,6 +117,12 @@ module.exports = {
       }
     });
   },
+  /**
+  * @description - Fetches the popular meals
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {array} meals - Popular meals
+  */
   getMostPopularMeals (req, res) {
     client.smembers('mostPopularMeals', function (err, reply){
       if (err) {
@@ -105,6 +132,12 @@ module.exports = {
       return res.status(200).send(reply);
     });
   },
+   /**
+  * @description - Updates meal details
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} meal - updated meal details
+  */
   update (req, res) {
     const mealId = req.params.mealId
     Meal
@@ -152,7 +185,12 @@ module.exports = {
         res.status(500).send({message: error})
       });
   },
-
+  /**
+  * @description - Deletes a meal
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} - Meal created
+  */
   destroy (req, res) {
     const mealId = req.params.mealId
     Meal

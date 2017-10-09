@@ -2,7 +2,7 @@ const mocha = require('mocha');
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
-const index = require('../../index');
+const index = require('../../app');
 const redis = require('redis')
 let client
 if (process.env.REDIS_URL) {
@@ -11,11 +11,11 @@ if (process.env.REDIS_URL) {
   client = redis.createClient();
 }
 
-const Meal = require('../../server/models').Meal;
-const User = require('../../server/models').User;
-const Rating = require('../../server/models').Rating;
-const Comment = require('../../server/models').Comment;
-const MealOrderDetail = require('../../server/models').MealOrderDetail
+const Meal = require('../../models').Meal;
+const User = require('../../models').User;
+const Rating = require('../../models').Rating;
+const Comment = require('../../models').Comment;
+const MealOrderDetail = require('../../models').MealOrderDetail
 
 chai.use(require('chai-http'));
 let mealData = { title: 'Suya meat', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'assorted meat' }

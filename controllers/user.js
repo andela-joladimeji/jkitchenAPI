@@ -6,9 +6,16 @@ module.exports = {
   hashPassword (password) {
     return bcrypt.hashSync(password, 12)
   },
+  /**
+  * @description - Creates a new user
+  * @param {object} request - request object containing the user's email, username, password
+   received from the client
+  * @param {object} response - response object served to the client
+  * @returns {promise} user - new user created
+  */
   signup (req, res) {
     const userDetails = req.body
-
+    console.log('sdkkdsskkkds!!!!!!!!', req.body, userDetails)
     if (!userDetails.email) {
       return res.status(422).send({ message: 'You must enter an email address.' })
     }
@@ -44,10 +51,17 @@ module.exports = {
           })
           .then(newUser => res.status(200).send(newUser))
       })
-      .catch(error => {
-        res.status(500).send({message: error})
-      })
+      .catch((error) => {
+        console.log('error wit user!!!!!!!!!!!', error);
+        res.status(500).send({ message: error });
+      });
   },
+   /**
+  * @description - signs in a new user
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} user - user details
+  */
   signin (req, res) {
     const userDetails = req.body
     if (!userDetails.email) {

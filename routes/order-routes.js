@@ -1,4 +1,4 @@
-const orderController = require('../../server/controllers/order')
+const orderController = require('../controllers/order')
 
 module.exports = (app) => {
   app.route('/api/v1/users/:userId/orders')

@@ -1,4 +1,4 @@
-const articleController = require('../../server/controllers/article')
+const articleController = require('../controllers/article')
 
 module.exports = (app) => {
   app.route('/api/v1/users/:userId/articles')

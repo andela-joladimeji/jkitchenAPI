@@ -1,4 +1,4 @@
-const mealController = require('../../server/controllers/meal')
+const mealController = require('../controllers/meal')
 
 module.exports = (app) => {
   app.route('/api/v1/meals') 

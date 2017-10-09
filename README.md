@@ -66,8 +66,8 @@ CREATE DATABASE jkitchen;
 ### Populate the DB with meal and user data
 In your terminal cd to jkitchen and run:
 ```
-sequelize db:migrate
-```
+
+```sequelize db:migrate
 ```
 sequelize db:seed:all
 ```
@@ -84,7 +84,7 @@ gulp serve
 ```
 or
 ```
-nodemon index.js
+nodemon app.js
 ```
 or 
 ```
@@ -98,5 +98,5 @@ npm test
 ```
 or
 ```
-gulp server-test 
+gulp test 
 ```
