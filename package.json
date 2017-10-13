@@ -24,7 +24,8 @@
     "pg-hstore": "^2.3.2",
     "redis": "^2.7.1",
     "sequelize": "^4.5.0",
-    "sinon": "^3.2.1"
+    "sinon": "^3.2.1",
+    "v8-profiler-node8": "^5.7.6"
   },
   "devDependencies": {
     "assert": "^1.4.1",
