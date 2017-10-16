@@ -14,47 +14,34 @@ module.exports = {
   * @returns {promise} user - new user created
   */
   signup (req, res) {
-    const userDetails = req.body
-    console.log('sdkkdsskkkds!!!!!!!!', req.body, userDetails)
-    if (!userDetails.email) {
-      return res.status(422).send({ message: 'You must enter an email address.' })
-    }
-    if (!userDetails.name) {
-      return res.status(422).send({ message: 'You must enter your full name.' })
-    }
-    if (!userDetails.username) {
-      return res.status(422).send({ message: 'You must enter a username.' })
-    }
-    if (!userDetails.password) {
-      return res.status(422).send({ message: 'You must enter a password.' })
-    }
-    User
-      .find({
-        where: {
-          email: userDetails.email
-        }
-      })
-      .then(existingUser => {
-        if (existingUser) {
-          return res.status(422).send({ message: 'That email address is already in use.' })
-        }
-        // userDetails.hashedPassword = hashPassword(userDetails.password)
-        User
-          .create({
-            name: userDetails.name,
-            username: userDetails.username,
-            email: userDetails.email,
-            phoneNumber: userDetails.phoneNumber,
-            imageURL: userDetails.imageURL,
-            socialMediaLinks: userDetails.socialMediaLinks,
-            hashedPassword: bcrypt.hashSync(userDetails.password, 12)
-          })
-          .then(newUser => res.status(200).send(newUser))
-      })
-      .catch((error) => {
-        console.log('error wit user!!!!!!!!!!!', error);
-        res.status(500).send({ message: error });
-      });
+    
+
+    // User
+    //   .find({
+    //     where: {
+    //       email: userDetails.email
+    //     }
+    //   })
+    //   .then(existingUser => {
+    //     if (existingUser) {
+    //       return res.status(422).send({ message: 'That email address is already in use.' })
+    //     }
+    //     // userDetails.hashedPassword = hashPassword(userDetails.password)
+    //     User
+    //       .create({
+    //         name: userDetails.name,
+    //         username: userDetails.username,
+    //         email: userDetails.email,
+    //         phoneNumber: userDetails.phoneNumber,
+    //         imageURL: userDetails.imageURL,
+    //         socialMediaLinks: userDetails.socialMediaLinks,
+    //         hashedPassword: bcrypt.hashSync(userDetails.password, 12)
+    //       })
+    //       .then(newUser => res.status(200).send(newUser))
+    //   })
+    //   .catch((error) => {
+    //     res.status(500).send({ message: error });
+    //   });
   },
    /**
   * @description - signs in a new user
@@ -143,12 +130,30 @@ module.exports = {
         })
       })
   },
+
+  validator(req, res, next) {
+    const userDetails = req.body;
+    req.checkBody('email', 'You must enter an email address.').notEmpty().isEmail().withMessage('It must be a valid email');
+    req.checkBody('name', 'You must enter your full name.').notEmpty();
+    req.checkBody('username', 'You must enter a username.').notEmpty();
+    req.checkBody('password', 'You must enter a password.').notEmpty();
+    req.checkBody('password', 'Password must have at least 7 chars long and contain at least one number')
+      .isLength({ min: 7 })
+      .matches(/\d/);
+
+    const validatorErrors = req.validationErrors();
+    if (validatorErrors) {
+      return res.status(422).json({ errors: validatorErrors});
+    } else {
+      return next();
+    }
+  },
   /**
  * User authorizations routing middleware
  */
   hasAuthorization (req, res, next) {
     if (req.user.role === 'admin') {
-      return next()
+      return next();
     } else {
       return res.send(403, {
         message: 'User is not authorized'

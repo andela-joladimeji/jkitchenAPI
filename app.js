@@ -3,7 +3,9 @@ const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 const logger = require('morgan')
+const expressValidator = require('express-validator');
 const log4js = require('log4js')
+
 log4js.configure({
   appenders: {
     console: { type: 'console' }
@@ -34,6 +36,7 @@ app.use(logger('dev'));
 app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressValidator());
 
 require('./routes/user-routes')(app);
 require('./routes/meal-routes')(app);
@@ -43,9 +46,6 @@ require('./routes/order-routes')(app);
 function requestHandler(req, res) {
   res.setHeader( 'X-XSS-Protection', '1; mode=block' );
 }
-// function requestHandler(req, res) {
-//   res.setHeader('Strict-Transport-Security', 'max-age=630720; includeSubDomains; preload');
-// }
 app.use((req, res, next)  => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -60,7 +60,5 @@ app.listen(PORT, (err) => {
   }
   log4jsLogger.info(`The server is running on localhost PORT: ${PORT}`);
 });
-app.get('*', (req, res) => res.status(200).send({
-  message: 'Welcome',
-}));
+
 module.exports = app;
