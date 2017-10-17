@@ -9,14 +9,14 @@ const index = require('../../app');
 const userController = require('../../controllers/user');
 
 const User = require('../../models').User;
-const userData = { username: 'Jim', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
+const userData = { username: 'Jim John', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
 chai.use(require('chai-http'));
 describe('User Controller',  () => {
   before(() => {
     return User.sequelize.sync();
   });
 
-  describe('Hash Password',  () => {
+  describe('Hash Password', () => {
     it('should hash the new user\'s password', () => {
       hashedPassword = userController.hashPassword('jdiew2')
       assert.equal(true, bcrypt.compareSync('jdiew2', hashedPassword));
@@ -24,7 +24,6 @@ describe('User Controller',  () => {
   });
 
   describe('Sign Up Function', function() {
-
     before(() => { 
       return User
         .destroy({ 
@@ -42,13 +41,33 @@ describe('User Controller',  () => {
       chai.request(index)
         .post('/api/v1/user/signup')
         .send(userData)
-        .then(function(res) {
+        .end(function(err, res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
-          expect(res.body).to.be.an('object')
-          done()
-      })
-    })
+          expect(res.body).to.be.an('object');
+          done();
+        });
+    });
+
+    it('should return an error when the required user details are not all valid or complete', function(done) {
+      const incompleteData = {
+        email: 'Joy',
+        name: 'Joy',
+      };
+      chai.request(index)
+        .post('/api/v1/user/signup')
+        .send(incompleteData)
+        .end((err, res) => {
+          expect(res).to.have.status(422);
+          assert.deepEqual(res.body.message,
+            ['Provide a valid email',
+              'You must enter a username.',
+              'You must enter a password.',
+              'Password must be at least 7 chars long and contain at least one number',
+              'Password must be at least 7 chars long and contain at least one number']);
+          done();
+        });
+    });
   });
 
   describe('Sign In Function', function(done) {

@@ -21,7 +21,6 @@ module.exports = {
   */
   // Only admin can create and update meal
   create (req, res) {
-    console.log(req.body)
     Meal
       .create({
         title: req.body.title,
@@ -52,7 +51,7 @@ module.exports = {
             as: 'ratings'
           }
         ]})
-      .then((meals) => res.status(200).send(meals))
+      .then(meals => res.status(200).send(meals))
       .catch((error) => {
         res.status(500).send({message: error})
       });
@@ -206,10 +205,12 @@ module.exports = {
           .then(() => {
             const mealToDelete = JSON.stringify(meal)
             client.srem('mostPopularMeals', mealToDelete)
-            client.del(`meal${mealId}`)
+            client.del(`meal${mealId}`);
             res.status(200).send({message: 'Meal deleted.'})
-          })
+          });
       })
-      .catch((error) => res.status(500).send({message: error}));
+      .catch((error) => {
+        res.status(400).send({message: error})
+    });
   }
 };

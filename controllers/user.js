@@ -1,10 +1,10 @@
-const User = require('../models').User
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const User = require('../models').User;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
-  hashPassword (password) {
-    return bcrypt.hashSync(password, 12)
+  hashPassword(password) {
+    return bcrypt.hashSync(password, 12);
   },
   /**
   * @description - Creates a new user
@@ -13,35 +13,35 @@ module.exports = {
   * @param {object} response - response object served to the client
   * @returns {promise} user - new user created
   */
-  signup (req, res) {
-    
+  signup(req, res) {    
+    const userDetails = req.body;
 
-    // User
-    //   .find({
-    //     where: {
-    //       email: userDetails.email
-    //     }
-    //   })
-    //   .then(existingUser => {
-    //     if (existingUser) {
-    //       return res.status(422).send({ message: 'That email address is already in use.' })
-    //     }
-    //     // userDetails.hashedPassword = hashPassword(userDetails.password)
-    //     User
-    //       .create({
-    //         name: userDetails.name,
-    //         username: userDetails.username,
-    //         email: userDetails.email,
-    //         phoneNumber: userDetails.phoneNumber,
-    //         imageURL: userDetails.imageURL,
-    //         socialMediaLinks: userDetails.socialMediaLinks,
-    //         hashedPassword: bcrypt.hashSync(userDetails.password, 12)
-    //       })
-    //       .then(newUser => res.status(200).send(newUser))
-    //   })
-    //   .catch((error) => {
-    //     res.status(500).send({ message: error });
-    //   });
+    User
+      .find({
+        where: {
+          email: userDetails.email,
+        },
+      })
+      .then((existingUser) => {
+        if (existingUser) {
+          return res.status(422).send({ message: 'That email address is already in use.' })
+        }
+        // userDetails.hashedPassword = hashPassword(userDetails.password)
+        User
+          .create({
+            name: userDetails.name,
+            username: userDetails.username,
+            email: userDetails.email,
+            phoneNumber: userDetails.phoneNumber,
+            imageURL: userDetails.imageURL,
+            socialMediaLinks: userDetails.socialMediaLinks,
+            hashedPassword: bcrypt.hashSync(userDetails.password, 12)
+          })
+          .then(newUser => res.status(200).send(newUser))
+      })
+      .catch((error) => {
+        res.status(500).send({ message: error });
+      });
   },
    /**
   * @description - signs in a new user
@@ -49,7 +49,7 @@ module.exports = {
   * @param {object} response - response object served to the client
   * @returns {json} user - user details
   */
-  signin (req, res) {
+  signin(req, res) {
     const userDetails = req.body
     if (!userDetails.email) {
       return res.status(422).send({ message: 'You must enter an email address.' })
@@ -60,8 +60,7 @@ module.exports = {
     User
       .find({
         where: {
-          email: userDetails.email
-        }
+          email: userDetails.email,        }
       })
       .then(user => {
         if (!user) {
@@ -95,10 +94,10 @@ module.exports = {
         })
       })
   },
-  signout (req, res) {
+  signout(req, res) {
     res.redirect('/')
   },
-  updateUser (req, res) {
+  updateUser(req, res) {
     User
       .findById(req.params.userId)
       .then(user => {
@@ -133,17 +132,21 @@ module.exports = {
 
   validator(req, res, next) {
     const userDetails = req.body;
-    req.checkBody('email', 'You must enter an email address.').notEmpty().isEmail().withMessage('It must be a valid email');
+    req.checkBody('email', 'You must enter an email address.').notEmpty().isEmail().withMessage('Provide a valid email');
     req.checkBody('name', 'You must enter your full name.').notEmpty();
     req.checkBody('username', 'You must enter a username.').notEmpty();
     req.checkBody('password', 'You must enter a password.').notEmpty();
-    req.checkBody('password', 'Password must have at least 7 chars long and contain at least one number')
+    req.checkBody('password', 'Password must be at least 7 chars long and contain at least one number')
       .isLength({ min: 7 })
       .matches(/\d/);
 
     const validatorErrors = req.validationErrors();
     if (validatorErrors) {
-      return res.status(422).json({ errors: validatorErrors});
+      const response = [];
+      validatorErrors.forEach(function(err) {
+        response.push(err.msg);
+      });
+      return res.status(422).json({ message: response});
     } else {
       return next();
     }
@@ -151,7 +154,7 @@ module.exports = {
   /**
  * User authorizations routing middleware
  */
-  hasAuthorization (req, res, next) {
+  hasAuthorization(req, res, next) {
     if (req.user.role === 'admin') {
       return next();
     } else {

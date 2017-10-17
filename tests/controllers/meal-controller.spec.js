@@ -29,7 +29,7 @@ describe('Meal Controller', () => {
     before((done) => {
       Meal.destroy({where: {title: mealData.title}})
         .then(function () {
-          done()
+          done();
         });
     });
     it('should post a Meal', (done) => {
@@ -77,23 +77,24 @@ describe('Meal Controller', () => {
             });
         })
     });
-    // it('should save popular meals', (done) =>{
-    //   Meal.find({where: {title: mealData.title}})
-    //     .then(function (meal) {
-    //       const mealId = meal.dataValues.id
-    //       chai.request(index)
-    //         .get(`/api/v1/meals/${mealId}`)
-    //         .then(function (res) {
-    //           expect(res).to.have.status(200);
-    //           expect(res).to.be.json;
-    //           expect(res.body).to.be.an('object')
-    //           // expect(res.body.description).to.have.string('This is white rice and stew with assorted meat')
-    //           done();
-    //         });
-    //     })
-    // })
+    it('should save popular meals', (done) =>{
+      Meal.find({where: {title: mealData.title}})
+        .then(function (meal) {
+          const mealId = meal.dataValues.id
+          chai.request(index)
+            .get(`/api/v1/meals/${mealId}`)
+            .then(function (res) {
+              expect(res).to.have.status(200);
+              expect(res).to.be.json;
+              expect(res.body).to.be.an('object')
+              // expect(res.body.description).to.have.string('This is white rice and stew with assorted meat')
+              done();
+            });
+        })
+    })
   });
-
+  
+  // test on caching
   describe('MostPopularMeals Function', () => {
     const mealOne = { title: 'Egg and bread', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'roasted assorted meat' }
     const mealTwo = { title: 'ofada rice', price: 50, available_quantity: 10, image: 'http://www.foodsng.com/wp-content/uploads/2015/10/ofada-rice-by-chikadbia.jpg', description: 'rice and stew with assorted meat' }
@@ -110,65 +111,65 @@ describe('Meal Controller', () => {
         .get('/api/v1/popularMeals')
         .then(function (res) {
           expect(res).to.have.status(200);
-          expect(res.body).to.be.an('array')
+          expect(res.body).to.be.an('array');
           done();
         });
     });
-  })
+  });
 
   describe('update Function', () => {
     it('should update one Meal', (done) => {
       Meal
         .find({
           where: {
-            title: mealData.title
-          }
+            title: mealData.title,
+          },
         })
         .then(function (meal) {
-          const mealId = meal.dataValues.id
+          const mealId = meal.dataValues.id;
           chai.request(index)
             .put(`/api/v1/meals/${mealId}`)
-            .send({image: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg'})
+            .send({ image: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
             .then(function (res) {
               expect(res).to.have.status(200);
               expect(res).to.be.json;
-              expect(res.body).to.be.an('object')
-              done()
-            })
-        })
+              expect(res.body).to.be.an('object');
+              done();
+            });
+        });
     });
   });
 
   describe('Ratemeal Function', () => {
     it('should rate one Meal', (done) => {
-      let userData = { username: 'EgyptRuns', password: '$32#hdsersd', name: 'Egypt Runs', email: 'egypt@yahoo.com', phoneNumber: '2902390033' }
-      let createdUserId
+      let userData = { username: 'EgyptRuns', password: '$32#hdsersd', name: 'Egypt Runs', email: 'egypt@yahoo.com', phoneNumber: '2902390033' };
+      let createdUserId;
 
       User
         .create(userData)
         .then(function (user) {
-          createdUserId = user.id
+          createdUserId = user.id;
           Meal
             .find({
               where: {
-                title: mealData.title
+                title: mealData.title,
               }
             })
             .then(function (meal) {
-              let mealId = meal.dataValues.id
-              let rateData = {ratings: 3}
+              let mealId = meal.dataValues.id;
+              let rateData = {ratings: 3};
               chai.request(index)
                 .post(`/api/v1/users/${createdUserId}/meals/${mealId}/ratings`)
                 .send(rateData)
                 .then(function (res) {
-                  console.log(res.body)
                   expect(res).to.have.status(200);
                   expect(res).to.be.json;
-                  expect(res.body).to.be.an('object')
-                  done()
-                }); 
-            })
-        })
+                  expect(res.body).to.be.an('object');
+                  expect(res.body.ratings).to.eql(3);
+                  done();
+                });
+            });
+        });
     });
   })
 
@@ -179,13 +180,24 @@ describe('Meal Controller', () => {
           const mealId = meal.dataValues.id
           chai.request(index)
             .delete(`/api/v1/meals/${mealId}`)
-            .then(function (res) {
+            .end((err, res) => { 
               expect(res).to.have.status(200);
               expect(res).to.be.json;
               expect(res.body).to.be.an('object')
+              expect(res.body.message).to.eql('Meal deleted.')
               done()
             })
         });
     });
+    it('should not delete an unsaved Meal', (done) => {
+      chai.request(index)
+        .delete(`/api/v1/meals/0`)
+        .end((err, res) => { 
+          expect(res).to.have.status(500);
+          expect(res.body.message).to.eql('Meal Not Found')
+          done()
+        })
+    });
+
   });
 })
