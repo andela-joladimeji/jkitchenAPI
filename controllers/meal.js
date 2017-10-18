@@ -10,15 +10,15 @@ if (process.env.REDIS_URL) {
 const Rating = require('../models').Rating;
 const Comment = require('../models').Comment;
 const MealOrderDetail = require('../models').MealOrderDetail
-
-module.exports = { 
-    /**
+ /**
   * @description - Creates a new meal
   * @param {object} request - request object containing the meal title, price,available_quantity,image,
   * description received from the client
   * @param {object} response - response object served to the client
   * @returns {json} meal - new meal created
   */
+module.exports = { 
+   
   // Only admin can create and update meal
   create (req, res) {
     Meal
@@ -212,5 +212,40 @@ module.exports = {
       .catch((error) => {
         res.status(400).send({message: error})
     });
-  }
+  },
+   validate(req, res, next) {
+    req.checkBody('title', 'Please enter the name of your meal of max length 30 characters.').notEmpty().isLength({ max: 30 });
+    req.checkBody('price', 'You must enter the price of the meal. This accepts only integers.').notEmpty().isInt();
+    req.checkBody('available_quantity', 'You must enter the quantity of the meal available for sale. This accepts only integers.').notEmpty().isInt();
+    req.checkBody('description', 'Enter a short description of your meal. It must not be more than 500 characters.').optional().isLength({ max: 500 });
+    req.checkBody('image', 'Enter a valid url for your image.').optional().isURL();
+
+    const validatorErrors = req.validationErrors();
+    if (validatorErrors) {
+      const response = [];
+      validatorErrors.forEach(function(err) {
+        response.push(err.msg);
+      });
+      return res.status(422).json({ message: response});
+    } else {
+      return next();
+    }
+  },
+  validateBeforeUpdate(req, res, next) {
+    req.checkBody('title', 'Please enter the name of your meal of max length 30 characters.').optional().isLength({ max: 30 });
+    req.checkBody('price', 'You must enter the price of the meal. This accepts only integers.').optional().isInt();
+    req.checkBody('available_quantity', 'You must enter the quantity of the meal available for sale. This accepts only integers.').optional().isInt();
+    req.checkBody('description', 'Enter a short description of your meal. It must not be more than 500 characters.').optional().isLength({ max: 500 });
+    req.checkBody('image', 'Enter a valid url for your image.').optional().isURL();
+
+    const validatorErrors = req.validationErrors();
+    if (validatorErrors) {
+      const response = [];
+      validatorErrors.forEach(function(err) {
+        response.push(err.msg);
+      });
+      return res.status(422).json({ message: response});
+    } else {
+      return next();
+    }
 };
