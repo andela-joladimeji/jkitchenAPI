@@ -97,6 +97,12 @@ module.exports = {
   signout(req, res) {
     res.redirect('/')
   },
+   /**
+  * @description - Updates user details
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} user - updated user details
+  */
   updateUser(req, res) {
     User
       .findById(req.params.userId)
@@ -137,6 +143,28 @@ module.exports = {
     req.checkBody('username', 'You must enter a username.').notEmpty();
     req.checkBody('password', 'You must enter a password.').notEmpty();
     req.checkBody('password', 'Password must be at least 7 chars long and contain at least one number')
+      .isLength({ min: 7 })
+      .matches(/\d/);
+
+    const validatorErrors = req.validationErrors();
+    if (validatorErrors) {
+      const response = [];
+      validatorErrors.forEach(function(err) {
+        response.push(err.msg);
+      });
+      return res.status(422).json({ message: response});
+    } else {
+      return next();
+    }
+  },
+  validateBeforeUpdate(req, res, next) {
+    const userDetails = req.body;
+    req.checkBody('email', 'You must enter an email address.').optional().isEmail().withMessage('Provide a valid email');
+    req.checkBody('name', 'You must enter your full name.').optional();
+    req.checkBody('username', 'You must enter a username.').optional();
+    req.checkBody('password', 'You must enter a password.').optional();
+    req.checkBody('password', 'Password must be at least 7 chars long and contain at least one number')
+      .optional()
       .isLength({ min: 7 })
       .matches(/\d/);
 
