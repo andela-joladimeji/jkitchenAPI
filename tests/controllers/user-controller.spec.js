@@ -1,16 +1,15 @@
 process.env.NODE_ENV = 'test';
-const mocha = require('mocha');
 const chai = require('chai');
 const expect = chai.expect;
 const assert = chai.assert;
-const should = chai.should();
 const bcrypt = require('bcryptjs');
+chai.use(require('chai-http'));
 const index = require('../../app');
 const userController = require('../../controllers/user');
 
 const User = require('../../models').User;
 const userData = { username: 'Jim John', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
-chai.use(require('chai-http'));
+
 describe('User Controller',  () => {
   before(() => {
     return User.sequelize.sync();
