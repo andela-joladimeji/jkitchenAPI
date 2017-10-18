@@ -1,6 +1,7 @@
-const Order = require('../models').Order
+const Order = require('../models').Order;
+const Meal = require('../models').Meal;
 const MealOrderDetail = require('../models').MealOrderDetail
-const _ = require('lodash')
+const _ = require('lodash');
 
 module.exports = {
   create (req, res) {
@@ -9,22 +10,22 @@ module.exports = {
         expectedTimeOfDelivery: req.body.expectedTimeOfDelivery,
         userId: req.params.userId,
         amount: req.body.amount,
-        extraNotes: req.body.extraNotes
+        extraNotes: req.body.extraNotes,
       })
       .then(order => {
         _.map(req.body.mealIds, (mealId) => {
           return MealOrderDetail
             .create({
               quantity: req.body.quantity,
-              mealId: req.params.mealId,
-              orderId: order.id
-            })
-        })
+              mealId: mealId,
+              orderId: order.id,
+            });
+        });
       })
-      .then(mealOrderDetails => {
-        res.status(200).send(mealOrderDetails)
+      .then((mealOrderDetails) => {
+        res.status(200).send(mealOrderDetails);
       })
-      .catch(error => res.status(400).send(error))
+      .catch(error => res.status(400).send(error));
   },
   listOrderByUser (req, res) {
     return Order
@@ -50,16 +51,15 @@ module.exports = {
       .findAll({
         where: {
           status: 'pending'
-        }
-        // ,
-        // include: [{
-        //   model: Meal,
-        //   as: 'meals',
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
-        // ],
+        },
+        include: [{
+          model: Meal,
+          as: 'meals',
+        }],
+        order: [
+          ['createdAt', 'DESC'],
+          [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        ],
       })
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error))
@@ -67,15 +67,15 @@ module.exports = {
   listUnassignedOrders (req, res) {
     return Order
       .findAll({
-        where: {assignedTo: null}
-        // include: [{
-        //   model: Meal,
-        //   as: 'meals',
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
-        // ],
+        where: { assignedTo: null },
+        include: [{
+          model: Meal,
+          as: 'meals',
+        }],
+        order: [
+          ['createdAt', 'DESC'],
+          [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        ],
       })
       .then((order) => res.status(200).send(order))
       .catch((error) => res.status(400).send(error))
@@ -83,14 +83,14 @@ module.exports = {
   listAll (req, res) {
     return Order
       .findAll({
-        // include: [{
-        //   model: Meal,
-        //   as: 'meals',
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
-        // ],
+        include: [{
+          model: Meal,
+          as: 'meals',
+        }],
+        order: [
+          ['createdAt', 'DESC'],
+          [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        ],
       })
       .then((orders) => res.status(200).send(orders))
       .catch((error) => res.status(400).send(error))
@@ -100,16 +100,16 @@ module.exports = {
       .find({
         where: {
           id: req.params.orderId,
-          userId: req.params.userId
-        }
-        // ,include: [{
-        //   model: Meal,
-        //   as: 'meals',
-        // }],
-        // order: [
-        //   ['createdAt', 'DESC'],
-        //   [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
-        // ],
+          userId: req.params.userId,
+        },
+        include: [{
+          model: Meal,
+          as: 'meals',
+        }],
+        order: [
+          ['createdAt', 'DESC'],
+          [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
+        ],
       })
       .then(order => {
         if (!order) {
@@ -128,19 +128,18 @@ module.exports = {
       .find({
         where: {
           id: req.params.OrderId,
-          userId: req.params.userId
-        }
-      //   ,
-      //   include: [{
-      //     model: Meal,
-      //     as: 'meals',
-      //   }],
+          userId: req.params.userId,
+        },
+        include: [{
+          model: Meal,
+          as: 'meals',
+        }],
       })
-      .then(order => {
+      .then((order) => {
         if (!order) {
           return res.status(404).send({
-            message: 'Order Not Found'
-          })
+            message: 'Order Not Found',
+          });
         }
         return Order
           .update({
