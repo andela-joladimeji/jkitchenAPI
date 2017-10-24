@@ -8,7 +8,7 @@ module.exports = {
     name: 'James', 
     email: faker.internet.email(), 
     phoneNumber:'2349039033', 
-    id: 1,
+    id: 21,
     token: auth.generateToken({id: 1}) 
   },
   adminUser: {
@@ -17,7 +17,7 @@ module.exports = {
     email: faker.internet.email(),
     password: 'admintester1',
     role: 'admin',
-    id: 2,
+    id: 22,
     token: auth.generateToken({id: 2})
   },
   testUser: {

@@ -40,6 +40,7 @@ const getUserToken = (data) => {
       .send(data)
       .end((error, response) => {
         if (error) {
+          console.log(error)
           return reject({ message: error });
         }
         return resolve(response.body);

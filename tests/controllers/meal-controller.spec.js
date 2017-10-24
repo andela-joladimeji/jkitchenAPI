@@ -122,8 +122,7 @@ describe('Meal Controller', () => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body).to.be.an('object');
-                console.log('reply', reply, res.body)
-                // expect(reply).to.eql(JSON.stringify(meal.dataValues))
+                expect(reply).to.eql(JSON.stringify(meal.dataValues))
                 done();
               })
             });
