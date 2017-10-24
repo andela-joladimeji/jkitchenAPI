@@ -30,7 +30,11 @@ module.exports = {
           return resolve(response.body);
         });
       })
-    });
+    }).catch((err) => {
+      if(err) {
+          console.log('error in one', err)
+        }
+    })
   },
   loginUser: (data) => {
     return new Promise((resolve, reject) => {
