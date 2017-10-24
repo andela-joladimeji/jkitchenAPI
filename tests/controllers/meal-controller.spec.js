@@ -122,7 +122,7 @@ describe('Meal Controller', () => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
                 expect(res.body).to.be.an('object');
-                expect(reply).to.eql(JSON.stringify(meal.dataValues))
+                expect(res.body).to.have.property('title').to.equal('Suya meat');
                 done();
               })
             });

@@ -10,7 +10,6 @@ module.exports = {
       .find({where: {email:data.email}})
       .then(user => {
         if (user) {
-          console.log('user found')
           user.destroy()
         }
       })
