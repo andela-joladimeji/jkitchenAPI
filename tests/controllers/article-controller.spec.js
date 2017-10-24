@@ -39,6 +39,7 @@ let articleId
 
 describe('Article Controller', () => {
   before(() => {
+    User.sequelize.sync();
     Article.sequelize.sync();
     return userHelper.getUserToken(adminUser)
     .then((response) => {

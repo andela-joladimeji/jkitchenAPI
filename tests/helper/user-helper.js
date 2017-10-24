@@ -6,16 +6,13 @@ const nock = require('nock')
 
 module.exports = {
   getUserToken: (data) => {
-    return User.sequelize.sync()
-    .then(() =>{
-       return User
+    return User
       .find({where: {email:data.email}})
       .then(user => {
         if (user) {
           user.destroy()
         }
       })
-    })
     .then(() => {
     return new Promise((resolve, reject) => {
       nock('/api/v1')
