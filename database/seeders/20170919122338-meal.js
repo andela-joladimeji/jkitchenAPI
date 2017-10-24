@@ -16,7 +16,6 @@ module.exports = {
       if (err) {
         return err;
       }
-      console.log('jsonObj', jsonObj)
       return queryInterface.bulkInsert('Meals', jsonObj, {});
     }); 
   },
