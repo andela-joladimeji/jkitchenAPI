@@ -6,13 +6,16 @@ const nock = require('nock')
 
 module.exports = {
   getUserToken: (data) => {
-    return User
+    return User.Article.sequelize.sync();
+    .then(() =>{
+       return User
       .find({where: {email:data.email}})
       .then(user => {
         if (user) {
           user.destroy()
         }
       })
+    })
     .then(() => {
     return new Promise((resolve, reject) => {
       nock('/api/v1')
@@ -30,10 +33,6 @@ module.exports = {
           return resolve(response.body);
         });
       })
-    }).catch((err) => {
-      if(err) {
-          console.log('error in one', err)
-        }
     })
   },
   loginUser: (data) => {
