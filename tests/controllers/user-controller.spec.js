@@ -5,11 +5,14 @@ const assert = chai.assert;
 const bcrypt = require('bcryptjs');
 chai.use(require('chai-http'));
 const index = require('../../app');
-const userController = require('../../controllers/user');
+const auth = require('../../middleware/authentication');
+const faker = require('faker');
+const userHelper = require('../helper/user-helper')
+
 
 const User = require('../../models').User;
-const userData = { username: 'Jim John', password:'$32#hdsjsd', name: 'JIm Caerey', email:'jim@yahoo.com', phoneNumber:'2902390033' }
-
+const userData = { username: 'Jim John', password:'$32#hdsjsd', name: 'JIm Caerey', email:faker.internet.email(), phoneNumber:'2902390033' }
+let adminToken;
 describe('User Controller',  () => {
   before(() => {
     return User.sequelize.sync();
@@ -17,7 +20,7 @@ describe('User Controller',  () => {
 
   describe('Hash Password', () => {
     it('should hash the new user\'s password', () => {
-      hashedPassword = userController.hashPassword('jdiew2')
+      const hashedPassword = auth.hashPassword('jdiew2')
       assert.equal(true, bcrypt.compareSync('jdiew2', hashedPassword));
     });
   });
@@ -62,7 +65,6 @@ describe('User Controller',  () => {
             ['Provide a valid email',
               'You must enter a username.',
               'You must enter a password.',
-              'Password must be at least 7 chars long and contain at least one number',
               'Password must be at least 7 chars long and contain at least one number']);
           done();
         });
@@ -70,6 +72,35 @@ describe('User Controller',  () => {
   });
 
   describe('Sign In Function', function(done) {
+  //   it('should be able to sign in successfully if they are existing users',
+  //   (done) => {
+  //     const { email, password, username, roleId } = mockData.firstUser;
+  //     chai.request(server)
+  //       .post('/api/v1/user/signin')
+  //       .set('Accept', 'application/json')
+  //       .send({ email, password })
+  //       .end((error, response) => {
+  //         expect(response.body.user.id).to.equal(1);
+  //         expect(response.body.user.role).to.equal();
+  //         expect(response.body.user.username).to.equal(username);
+  //         expect(response.body.user.email).to.equal(email);
+  //         expect(response).to.have.status(200);
+  //         done();
+  //       });
+  //   });
+  // it('should not be able to login if they do NOT already have accounts',
+  //   (done) => {
+  //     const { email, password } = mockData.thirdUser;
+  //     chai.request(server)
+  //       .post('/api/v1/user/signin')
+  //       .set('Accept', 'application/json')
+  //       .send({ email, password })
+  //       .end((error, response) => {
+  //         expect(response).to.have.status(401);
+  //         expect(response.body).to.eql({ message: 'Not an existing user' });
+  //         done();
+  //       });
+  //   });
     it('should sign in users', (done) => {
       chai.request(index)
         .post('/api/v1/user/signin')
@@ -84,18 +115,14 @@ describe('User Controller',  () => {
   });
   describe('Update User Function', function(done) {
     it('should update user data', (done) => {
-      User
-        .find({ 
-          where: {
-            email: userData.email
-          }
-        })
-        .then(function(user){
-          const userId = user.dataValues.id
+      userHelper.loginUser(userData)
+        .then((loggedInUser) => {
+          const loggedInUserId = loggedInUser.data.id
           chai.request(index)
-            .put(`/api/v1/user/me/${userId}/edit`)
+            .put(`/api/v1/user/me/${loggedInUserId}/edit`)
             .send({username:'Jim Jim'})
-            .then(function(res) {
+            .set('authorization', `${loggedInUser.token}`)
+            .end((err, res) => {
               expect(res).to.have.status(200);
               expect(res).to.be.json;
               expect(res.body).to.have.an('object');

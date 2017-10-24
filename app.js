@@ -43,13 +43,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
 
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
-// app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
 require('./config/passport');
 require('./routes/user-routes')(app);
 require('./routes/meal-routes')(app);
 require('./routes/rating-routes')(app);
 require('./routes/order-routes')(app);
+require('./routes/article-routes')(app);
 
 function requestHandler(req, res) {
   res.setHeader( 'X-XSS-Protection', '1; mode=block' );
