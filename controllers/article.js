@@ -28,7 +28,7 @@ module.exports = {
       .create(newArticle)
       .then(article => res.status(200).send(article))
       .catch((error) => {
-        res.status(500).send(error);
+        res.status(500).send({ message: error });
       });
   },
   /**
@@ -40,8 +40,8 @@ module.exports = {
   list(req, res) {
     return Article
       .findAll()
-      .then((articles) => res.status(200).send(articles))
-      .catch((error) => res.status(500).send(error));
+      .then(articles => res.status(200).send(articles))
+      .catch(error => res.status(500).send({ message: error }));
   },
 
    /**
@@ -59,10 +59,10 @@ module.exports = {
             message: 'Article Not Found',
           });
         }
-        return res.status(200).send(Article);
+        return res.status(200).send(article);
       })
-      .catch((error) =>{
-       res.status(500).send(error)
+      .catch((error) => {
+       res.status(500).send({ message: error });
       });
   },
 
@@ -91,9 +91,9 @@ module.exports = {
           })
           .then((updatedArticle) => res.status(200).send(updatedArticle))
       })
-      .catch((error) => res.status(500).send(error));
+      .catch(error => res.status(500).send({ message: error }));
   },
-   /**
+  /**
   * @description - Deletes an article
   * @param {object} request - request object received from the client
   * @param {object} response - response object served to the client
@@ -112,7 +112,7 @@ module.exports = {
           .destroy()
           .then(() => res.status(200).send({message: 'Article deleted.'}));
       })
-      .catch(error => res.status(500).send(error));
+      .catch(error => res.status(500).send({ message: error }));
   },
   validate(req, res, next) {
     req.checkBody('title', 'Please enter the title of your article.').notEmpty().isLength({ max: 30 });
