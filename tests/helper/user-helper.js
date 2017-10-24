@@ -6,7 +6,7 @@ const nock = require('nock')
 
 module.exports = {
   getUserToken: (data) => {
-    return User.Article.sequelize.sync();
+    return User.sequelize.sync();
     .then(() =>{
        return User
       .find({where: {email:data.email}})
