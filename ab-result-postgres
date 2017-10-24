@@ -1,0 +1,44 @@
+➜  node-express-realworld-example-app git:(master) ab -n 100 -c 10  http://localhost:3000/api/v1/meals
+This is ApacheBench, Version 2.3 <$Revision: 1757674 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient).....done
+
+
+Server Software:
+Server Hostname:        localhost
+Server Port:            3000
+
+Document Path:          /api/v1/meals
+Document Length:        2861 bytes
+
+Concurrency Level:      10
+Time taken for tests:   0.536 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      307100 bytes
+HTML transferred:       286100 bytes
+Requests per second:    186.53 [#/sec] (mean)
+Time per request:       53.610 [ms] (mean)
+Time per request:       5.361 [ms] (mean, across all concurrent requests)
+Transfer rate:          559.42 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       0
+Processing:    15   53  51.5     35     217
+Waiting:       15   51  51.7     34     216
+Total:         16   53  51.6     35     218
+
+Percentage of the requests served within a certain time (ms)
+  50%     35
+  66%     41
+  75%     43
+  80%     47
+  90%    192
+  95%    210
+  98%    210
+  99%    218
+ 100%    218 (longest request)
+➜  node-express-realworld-example-app git:(master)
