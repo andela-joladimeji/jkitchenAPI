@@ -7,9 +7,7 @@ module.exports = {
     password: '$123d32#hdsjsd', 
     name: 'James', 
     email: faker.internet.email(), 
-    phoneNumber:'2349039033', 
-    // id: 21,
-    // token: auth.generateToken({id: 1}) 
+    phoneNumber:'2349039033',
   },
   adminUser: {
     username: 'admin01',
@@ -17,11 +15,8 @@ module.exports = {
     email: faker.internet.email(),
     password: 'admintester1',
     role: 'admin',
-    // id: 22,
-    // token: auth.generateToken({id: 2})
   },
   testUser: {
-    id: 23,
     username: 'test01',
     name: 'test user',
     email: faker.internet.email(),

@@ -16,6 +16,7 @@ if (process.env.REDIS_URL) {
 const Article = require('../../models').Article;
 const User = require('../../models').User;
 const mockData = require('../mock-data');
+const userHelper = require('../helper/user-helper')
 
 const incompleteArticleData = {
   content: 'Joy',
@@ -28,25 +29,6 @@ const completeArticleData = {
   excerpt: 'This is about that emotion that makes you want to shout and dance',
   imageURL: 'http://www.lifechurch242.org/wp-content/uploads/2016/01/Joy.jpg'
 };
-const getUserToken = (data) => {
-  return new Promise((resolve, reject) => {
-    nock('/api/v1')
-      .get('/user/signup')
-      .reply(200, (uri, data) =>{
-        return data;
-      });
-    chai.request(index)
-      .post('/api/v1/user/signup')
-      .send(data)
-      .end((error, response) => {
-        if (error) {
-          console.log(error)
-          return reject({ message: error });
-        }
-        return resolve(response.body);
-      });
-  });
-};
 
 const adminUser = mockData.adminUser;
 const userData = mockData.userData;
@@ -58,10 +40,10 @@ let articleId
 describe('Article Controller', () => {
   before(() => {
     Article.sequelize.sync();
-    return getUserToken(adminUser)
+    return userHelper.getUserToken(adminUser)
     .then((response) => {
       createdAdminData = response;
-      return getUserToken(mockData.userData);
+      return userHelper.getUserToken(mockData.userData);
     })
       .then((response) => {
         createdUserData = response;
