@@ -39,20 +39,29 @@ let articleId
 
 describe('Article Controller', () => {
   before(() => {
-    User.sequelize.sync();
-    Article.sequelize.sync();
+    return User.sequelize.sync()
+    .then(() => {
+    Article.sequelize.sync()
+  })
+    .then(()=> {
+    // const myVar = setTimeout(
     return userHelper.getUserToken(adminUser)
+  })
     .then((response) => {
+      console.log(response,'response in article for admin')
       createdAdminData = response;
       return userHelper.getUserToken(mockData.userData);
     })
       .then((response) => {
         createdUserData = response;
         return Article.create(completeArticleData)
-      }).then((article) => {
+      })
+      .then((article) => {
         createdArticleData = article.get()
         articleId = createdArticleData.id
-      });
+      })
+      // , 200);
+    // clearTimeout(myVar);
   });
 
   describe('Create Function', () => {
