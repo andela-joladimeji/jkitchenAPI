@@ -1,9 +1,15 @@
 const mocha = require('mocha');
+
 const chai = require('chai');
+
 const expect = chai.expect;
+
 const assert = chai.assert;
+
 const index = require('../../app');
+
 const redis = require('redis');
+
 let client;
 if (process.env.REDIS_URL) {
   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
@@ -28,8 +34,11 @@ let meal;
 
 describe('Meal Controller', () => {
   before(() => {
-    Meal.sequelize.sync()
-    return userHelper.getUserToken(adminUser)
+    return Meal.sequelize.sync()
+    .then(()=> {
+        return userHelper.getUserToken(adminUser)
+      })
+
     .then((response) => {
       createdAdminData = response;
       return userHelper.getUserToken(mockData.userData);
