@@ -1,5 +1,4 @@
 const Rating = require('../models').Rating;
-// const mealController = require('../../server/controllers/meal')
 const Meal = require('../models').Meal;
 const redis = require('redis');
 let client;
