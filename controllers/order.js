@@ -1,10 +1,15 @@
-const Order = require('../models').Order;
-const Meal = require('../models').Meal;
-const MealOrderDetail = require('../models').MealOrderDetail
+const { Meal, Order, MealOrderDetail } = require('../models');
 const _ = require('lodash');
 
 module.exports = {
-  create (req, res) {
+  /**
+  * @description - Creates a new order
+  * @param {object} request - request object containing the order expectedTimeOfDelivery, userId, amount, extraNotes
+  * description received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} order - new order created
+  */
+  create(req, res) {
     return Order
       .create({
         expectedTimeOfDelivery: req.body.expectedTimeOfDelivery,
@@ -12,12 +17,12 @@ module.exports = {
         amount: req.body.amount,
         extraNotes: req.body.extraNotes,
       })
-      .then(order => {
+      .then((order) => {
         _.map(req.body.mealIds, (mealId) => {
           return MealOrderDetail
             .create({
               quantity: req.body.quantity,
-              mealId: mealId,
+              mealId,
               orderId: order.id,
             });
         });
@@ -27,30 +32,30 @@ module.exports = {
       })
       .catch(error => res.status(400).send(error));
   },
-  listOrderByUser (req, res) {
+  listOrderByUser(req, res) {
     return Order
       .findAll({
         where: {
           id: req.params.orderId,
-          userId: req.params.userId
+          userId: req.params.userId,
         },
         include: [{
           model: MealOrderDetail,
-          as: 'mealOrderDetails'
+          as: 'mealOrderDetails',
         }],
         order: [
           ['createdAt', 'DESC'],
-          [{ model: MealOrderDetail, as: 'mealOrderDetails' }, 'createdAt', 'ASC']
-        ]
+          [{ model: MealOrderDetail, as: 'mealOrderDetails' }, 'createdAt', 'ASC'],
+        ],
       })
-      .then((order) => res.status(200).send(order))
-      .catch((error) => res.status(400).send(error))
+      .then(order => res.status(200).send(order))
+      .catch(error => res.status(400).send(error));
   },
-  listPendingOrders (req, res) {
+  listPendingOrders(req, res) {
     return Order
       .findAll({
         where: {
-          status: 'pending'
+          status: 'pending',
         },
         include: [{
           model: Meal,
@@ -61,10 +66,10 @@ module.exports = {
           [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
         ],
       })
-      .then((order) => res.status(200).send(order))
-      .catch((error) => res.status(400).send(error))
+      .then(order => res.status(200).send(order))
+      .catch(error => res.status(400).send(error));
   },
-  listUnassignedOrders (req, res) {
+  listUnassignedOrders(req, res) {
     return Order
       .findAll({
         where: { assignedTo: null },
@@ -77,10 +82,16 @@ module.exports = {
           [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
         ],
       })
-      .then((order) => res.status(200).send(order))
-      .catch((error) => res.status(400).send(error))
+      .then(order => res.status(200).send(order))
+      .catch(error => res.status(400).send(error));
   },
-  listAll (req, res) {
+  /**
+  * @description - Fetches all orders
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} orders - orders fetched
+  */
+  listAll(req, res) {
     return Order
       .findAll({
         include: [{
@@ -92,10 +103,16 @@ module.exports = {
           [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
         ],
       })
-      .then((orders) => res.status(200).send(orders))
-      .catch((error) => res.status(400).send(error))
+      .then(orders => res.status(200).send(orders))
+      .catch(error => res.status(400).send(error));
   },
-  getOne (req, res) {
+  /**
+  * @description - Fetches a order
+  * @param {object} request - request object received from the client
+  * @param {object} response - response object served to the client
+  * @returns {json} order - fetched order
+  */
+  getOne(req, res) {
     return Order
       .find({
         where: {
@@ -111,19 +128,19 @@ module.exports = {
           [{ model: Meal, as: 'meals' }, 'createdAt', 'ASC'],
         ],
       })
-      .then(order => {
+      .then((order) => {
         if (!order) {
           return res.status(404).send({
-            message: 'Order Not Found'
-          })
+            message: 'Order Not Found',
+          });
         }
-        return res.status(200).send(order)
+        return res.status(200).send(order);
       })
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send(error));
   },
-  // that means the support person assigns orders to a delivery person, 
+  // that means the support person assigns orders to a delivery person,
   // then the system sends an email to he user after delivery to rate
-  update (req, res) {
+  update(req, res) {
     return Order
       .find({
         where: {
@@ -149,9 +166,9 @@ module.exports = {
             assignedTo: req.body.assignedTo || order.assignedTo,
             amount: req.body.amount || order.amount,
             extraNotes: req.body.extraNotes || order.extraNotes,
-            rate: req.body.rate || order.rate
+            rate: req.body.rate || order.rate,
           })
-          .then(updatedOrder => {
+          .then((updatedOrder) => {
             // that means the admin assigns order, then the system send an email to he user to rate
 
             // admin check if it has been delivered
@@ -159,34 +176,31 @@ module.exports = {
             //   // then send email
             // use nodemailer to send email
             // }
-            res.status(200).send(updatedOrder)
-          })
+            res.status(200).send(updatedOrder);
+          });
       })
-      .catch(error => {
-        res.status(400).send(error)
-      })
+      .catch(error => res.status(400).send(error));
   },
 
-  destroy (req, res) {
+  destroy(req, res) {
     return Order
       .find({
         where: {
           id: req.params.orderId,
-          userId: req.params.userId
-        }
+          userId: req.params.userId,
+        },
       })
-      .then(order => {
+      .then((order) => {
         if (!order) {
           return res.status(404).send({
-            message: 'Order Not Found'
-          })
+            message: 'Order Not Found',
+          });
         }
-
         return order
           .destroy()
           .then(() => res.status(204).send())
-          .catch(error => res.status(400).send(error))
+          .catch(error => res.status(400).send(error));
       })
-      .catch(error => res.status(400).send(error))
-  }
-}
+      .catch(error => res.status(400).send(error));
+  },
+};

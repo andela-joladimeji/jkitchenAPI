@@ -1,22 +1,13 @@
 const chai = require('chai');
-const assert = chai.assert;
-const expect = chai.expect;
+const { assert, expect } = chai;
 const index = require('../../app');
-const redis = require('redis')
-const nock = require('nock')
+const nock = require('nock');
 chai.use(require('chai-http'));
 
-let client
-if (process.env.REDIS_URL) {
-  client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
-} else {
-  client = redis.createClient();
-}
 
-const Article = require('../../models').Article;
-const User = require('../../models').User;
+const { Article, User } = require('../../models');
 const mockData = require('../mock-data');
-const userHelper = require('../helper/user-helper')
+const userHelper = require('../helper/user-helper');
 
 const incompleteArticleData = {
   content: 'Joy',
@@ -30,43 +21,36 @@ const completeArticleData = {
   imageURL: 'http://www.lifechurch242.org/wp-content/uploads/2016/01/Joy.jpg'
 };
 
-const adminUser = mockData.adminUser;
-const userData = mockData.userData;
+const { adminUser, userData } = mockData;
 let createdAdminData;
 let createdUserData;
-let createdArticleData
-let articleId 
+let createdArticleData;
+let articleId;
 
 describe('Article Controller', () => {
   before(() => {
     return User.sequelize.sync()
-    .then(() => {
-    Article.sequelize.sync()
-  })
-    .then(()=> {
-    // const myVar = setTimeout(
-    return userHelper.getUserToken(adminUser)
-  })
-    .then((response) => {
-      console.log(response,'response in article for admin')
-      createdAdminData = response;
-      return userHelper.getUserToken(mockData.userData);
-    })
+      .then(() =>
+        Article.sequelize.sync())
+      .then(() =>
+        userHelper.getUserToken(adminUser))
+      .then((response) => {
+        createdAdminData = response;
+        return userHelper.getUserToken(userData);
+      })
       .then((response) => {
         createdUserData = response;
-        return Article.create(completeArticleData)
+        return Article.create(completeArticleData);
       })
       .then((article) => {
-        createdArticleData = article.get()
-        articleId = createdArticleData.id
-      })
-      // , 200);
-    // clearTimeout(myVar);
+        createdArticleData = article.get();
+        articleId = createdArticleData.id;
+      });
   });
 
   describe('Create Function', () => {
 
-    it('should return an error message when the token is not provided', function(done) {
+    it('should return an error message when the token is not provided', (done) => {
       nock('/api/v1')
         .post(`/users/${createdAdminData.data.id}/articles`, incompleteArticleData)
         .reply(401);
@@ -80,7 +64,7 @@ describe('Article Controller', () => {
         });
     });
 
-    it('should return an error message when the user is not logged in', function(done) {
+    it('should return an error message when the user is not logged in', (done) => {
       nock('/api/v1')
         .post(`/users/${createdUserData.data.id}/articles`, incompleteArticleData)
         .reply(401);
@@ -95,7 +79,7 @@ describe('Article Controller', () => {
         });
     });
   
-    it('should return an error message when a non admin user wants to post articles', function(done) {
+    it('should return an error message when a non admin user wants to post articles', (done) => {
       nock('/api/v1')
         .post(`/users/${createdUserData.data.id}/articles`, incompleteArticleData)
         .reply(403);
@@ -110,7 +94,7 @@ describe('Article Controller', () => {
         });
     });
 
-    it('should return an error message when an admin user wants to post an article with incomplete required data', function(done) {
+    it('should return an error message when an admin user wants to post an article with incomplete required data', (done) => {
       nock('/api/v1')
         .post(`/users/${createdAdminData.data.id}/articles`, incompleteArticleData)
         .reply(422);
@@ -125,14 +109,14 @@ describe('Article Controller', () => {
         });
     });
 
-    it('should return an error message when the required data is invalid', function(done) {
+    it('should return an error message when the required data is invalid', (done) => {
       nock('/api/v1')
         .post(`/users/${createdAdminData.data.id}/articles`, incompleteArticleData)
         .reply(422);
       chai.request(index)
         .post(`/api/v1/users/${createdAdminData.data.id}/articles`)
         .set('authorization', `${createdAdminData.token}`)
-        .send({title: 'Coders',excerpt: 'This is about coders who enjoy what they do', content:134 })
+        .send({ title: 'Coders', excerpt: 'This is about coders who enjoy what they do', content: 134 })
         .end((err, res) => {
           expect(res).to.have.status(422);
           assert.deepEqual(res.body.message, ['You must enter the content of the article and allows only alphabets']);
@@ -140,7 +124,7 @@ describe('Article Controller', () => {
         });
     });
 
-    it('should return success an admin user wants to post an article', function(done) {
+    it('should return success an admin user wants to post an article', (done) => {
       nock('/api/v1')
         .post(`/api/v1/users/${createdAdminData.data.id}/articles`, incompleteArticleData)
         .reply(200);
@@ -167,7 +151,7 @@ describe('Article Controller', () => {
         .reply(200);
       chai.request(index)
         .get(`/api/v1/users/${createdUserData.data.id}/articles`)
-        .then(function (res) {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.an('array');
@@ -177,8 +161,7 @@ describe('Article Controller', () => {
   });
 
   describe('getOne Function', () => {
-    it('should return an error if a user tries to fetch a non-existent article',
-    (done) => {
+    it('should return an error if a user tries to fetch a non-existent article', (done) => {
       chai.request(index)
         .get(`/api/v1/users/${createdUserData.data.id}/articles/0`)
         .end((error, response) => {
@@ -187,13 +170,14 @@ describe('Article Controller', () => {
           done();
         });
     });
+
     it('should return one article', (done) => {
       nock('/api/v1')
         .get(`/users/${createdUserData.data.id}/articles/${articleId}`)
         .reply(200, createdArticleData);
       chai.request(index)
         .get(`/api/v1/users/${createdUserData.data.id}/articles/${articleId}`)
-        .then(function (res) {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body.title).to.equal('Joy');
           expect(res.body.content).to.equal('Joy');
@@ -205,9 +189,9 @@ describe('Article Controller', () => {
   });
 
   describe('update Function', () => {
-    it('should return an error message when the token is not provided', function(done) {
+    it('should return an error message when the token is not provided', (done) => {
       nock('/api/v1')
-        .put(`/users/${createdAdminData.data.id}/articles/${articleId}`, {imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
+        .put(`/users/${createdAdminData.data.id}/articles/${articleId}`, { imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
         .reply(401);
       chai.request(index)
         .put(`/api/v1/users/${createdAdminData.data.id}/articles/${articleId}`)
@@ -218,7 +202,8 @@ describe('Article Controller', () => {
           done();
         });
     });
-    it('should return an error message when the user is not logged in', function(done) {
+
+    it('should return an error message when the user is not logged in', (done) => {
       nock('/api/v1')
         .put(`/users/${createdAdminData.data.id}/articles/${articleId}`, { imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
         .reply(401);
@@ -233,7 +218,7 @@ describe('Article Controller', () => {
         });
     });
 
-    it('should return an error message when a non admin user wants to update an article', function(done) {
+    it('should return an error message when a non admin user wants to update an article', (done) => {
       nock('/api/v1')
         .put(`/users/${createdUserData.data.id}/articles/${articleId}`, { imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
         .reply(403);
@@ -253,45 +238,45 @@ describe('Article Controller', () => {
         .put(`/users/${createdAdminData.data.id}/articles/${articleId}`, { imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
         .reply(200);
       chai.request(index)
-        .put(`/api/v1/users/${createdAdminData.data.id}/articles/${articleId}`) 
+        .put(`/api/v1/users/${createdAdminData.data.id}/articles/${articleId}`)
         .set('authorization', `${createdAdminData.token}`)
         .send({ imageURL: 'http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg' })
-        .then(function (res) {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body.imageURL).to.eql('http://sisijemimah.com/wp-content/uploads/2015/12/Ofada-Stew-12-1024x683.jpg');
           done();
         });
-      });
-  })
-    describe('delete Function', () => {
-      it('should delete one article', (done) => {
-        nock('/api/v1')
-          .delete(`/users/${createdAdminData.data.id}/articles/${articleId}`)
-          .reply(200);
-        chai.request(index)
-          .delete(`/api/v1/users/${createdAdminData.data.id}/articles/${articleId}`)
-          .set('authorization', `${createdAdminData.token}`)
-          .end((err, res) => { 
-            expect(res).to.have.status(200);
-            expect(res).to.be.json;
-            expect(res.body.message).to.eql('Article deleted.')
-            done()
-          })
-        });
-
-      it('should not delete an unsaved article', (done) => {
-        nock('/api/v1')
-          .delete(`/users/${createdAdminData.data.id}/articles/0`)
-          .reply(500);
-        chai.request(index)
-          .delete(`/api/v1/users/${createdAdminData.data.id}/articles/0`)
-          .set('authorization', `${createdAdminData.token}`)
-          .end((err, res) => { 
-            expect(res).to.have.status(500);
-            expect(res.body.message).to.eql('Article Not Found')
-            done()
-          })
-      });
     });
   });
+  describe('delete Function', () => {
+    it('should delete one article', (done) => {
+      nock('/api/v1')
+        .delete(`/users/${createdAdminData.data.id}/articles/${articleId}`)
+        .reply(200);
+      chai.request(index)
+        .delete(`/api/v1/users/${createdAdminData.data.id}/articles/${articleId}`)
+        .set('authorization', `${createdAdminData.token}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body.message).to.eql('Article deleted.');
+          done();
+        });
+    });
+
+    it('should not delete an unsaved article', (done) => {
+      nock('/api/v1')
+        .delete(`/users/${createdAdminData.data.id}/articles/0`)
+        .reply(500);
+      chai.request(index)
+        .delete(`/api/v1/users/${createdAdminData.data.id}/articles/0`)
+        .set('authorization', `${createdAdminData.token}`)
+        .end((err, res) => {
+          expect(res).to.have.status(500);
+          expect(res.body.message).to.eql('Article Not Found');
+          done();
+        });
+    });
+  });
+});

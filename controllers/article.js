@@ -1,10 +1,8 @@
-const Article = require('../models').Article;
-const Rating = require('../models').Rating;
-const Comment = require('../models').Comment;
+const { Article } = require('../models');
 
 module.exports = {
   // Only admin can create and update Article
-   /**
+  /**
   * @description - Creates a new article
   * @param {object} request - request object containing the article title, price,available_quantity,image,
   * description received from the client
@@ -17,12 +15,12 @@ module.exports = {
       content: req.body.content,
       excerpt: req.body.excerpt,
       imageURL: req.body.imageURL,
-      userId: req.params.userId
+      userId: req.params.userId,
     };
-    // Type is either revision or article. 
+    // Type is either revision or article.
     // a user can create a revision of an article
     if (req.body.type) {
-      newArticle.type = req.body.type;     
+      newArticle.type = req.body.type;
     }
     return Article
       .create(newArticle)
@@ -44,7 +42,7 @@ module.exports = {
       .catch(error => res.status(500).send({ message: error }));
   },
 
-   /**
+  /**
   * @description - Fetches an article
   * @param {object} request - request object received from the client
   * @param {object} response - response object served to the client
@@ -62,11 +60,11 @@ module.exports = {
         return res.status(200).send(article);
       })
       .catch((error) => {
-       res.status(500).send({ message: error });
+        res.status(500).send({ message: error });
       });
   },
 
-   /**
+  /**
   * @description - Updates article details
   * @param {object} request - request object received from the client
   * @param {object} response - response object served to the client
@@ -75,7 +73,7 @@ module.exports = {
   update(req, res) {
     return Article
       .findById(req.params.articleId)
-      .then(article => {
+      .then((article) => {
         if (!article) {
           return res.status(404).send({
             message: 'Article Not Found',
@@ -89,7 +87,7 @@ module.exports = {
             imageURL: req.body.imageURL || article.imageURL,
             type: req.body.type || article.type,
           })
-          .then((updatedArticle) => res.status(200).send(updatedArticle))
+          .then(updatedArticle => res.status(200).send(updatedArticle));
       })
       .catch(error => res.status(500).send({ message: error }));
   },
@@ -102,7 +100,7 @@ module.exports = {
   destroy(req, res) {
     return Article
       .findById(req.params.articleId)
-      .then(article => {
+      .then((article) => {
         if (!article) {
           return res.status(500).send({
             message: 'Article Not Found',
@@ -110,7 +108,7 @@ module.exports = {
         }
         return article
           .destroy()
-          .then(() => res.status(200).send({message: 'Article deleted.'}));
+          .then(() => res.status(200).send({ message: 'Article deleted.' }));
       })
       .catch(error => res.status(500).send({ message: error }));
   },
@@ -123,13 +121,12 @@ module.exports = {
     const validatorErrors = req.validationErrors();
     if (validatorErrors) {
       const response = [];
-      validatorErrors.forEach(function(err) {
+      validatorErrors.forEach((err) => {
         response.push(err.msg);
       });
-      return res.status(422).json({ message: response});
-    } else {
-      return next();
+      return res.status(422).json({ message: response });
     }
+    return next();
   },
   validateBeforeUpdate(req, res, next) {
     req.checkBody('title', 'Please enter the title of your article.').optional().isLength({ max: 30 });
@@ -140,13 +137,12 @@ module.exports = {
     const validatorErrors = req.validationErrors();
     if (validatorErrors) {
       const response = [];
-      validatorErrors.forEach(function(err) {
+      validatorErrors.forEach((err) => {
         response.push(err.msg);
       });
-      return res.status(422).json({ message: response});
-    } else {
-      return next();
+      return res.status(422).json({ message: response });
     }
+    return next();
   },
   sanitizer(req, res, next) {
     req.checkBody('name').escape();
@@ -158,10 +154,9 @@ module.exports = {
   },
   hasAuthorization(req, res, next) {
     if (req.article.user.id !== req.user.id) {
-      return res.status(403).send({ message: 'User is not authorized',
-      });
+      return res.status(403).send({ message: 'User is not authorized' });
     }
-    next();
+    return next();
   },
 };
 

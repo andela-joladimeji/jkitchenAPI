@@ -1,6 +1,6 @@
-const Rating = require('../models').Rating;
-const Meal = require('../models').Meal;
+const { Meal, Rating } = require('../models');
 const redis = require('redis');
+
 let client;
 if (process.env.REDIS_URL) {
   client = redis.createClient(process.env.REDIS_URL, { no_ready_check: true });
@@ -31,21 +31,19 @@ const updateMeal = (rate, mealId) => {
     });
 };
 const updateOrCreateRatings = (mealId, userId, ratings) => {
-  Rating.find({ where: { mealId: mealId, userId } })
+  Rating.find({ where: { mealId, userId } })
     .then((rating) => {
       if (!rating) {
-      //create rating
         Rating.create({
-          userId: userId,
-          mealId: mealId,
-          ratings: ratings,
-        }).then((newRate) => {
-          return newRate;
-        });
+          userId,
+          mealId,
+          ratings,
+        }).then((newRate) =>
+          newRate);
       } else {
         // update existing rating
         rating.update({
-          ratings: ratings,
+          ratings,
         })
           .then((updatedRating) => {
             return updatedRating;
@@ -56,36 +54,35 @@ const updateOrCreateRatings = (mealId, userId, ratings) => {
 module.exports = {
   rateMeal(req, res) {
 
-    const mealId = req.params.mealId;
-    const ratings = req.body.ratings;
-    const userId = req.params.userId;
+    const { mealId, userId } = req.params;
+    const { ratings } = req.body;
+
     // check if user has rated before and update
     //  const createdOrUpdatedRating = updateOrCreateRatings(mealId, userId, ratings)
-    Rating.find({ where: { mealId: mealId, userId } })
-      .then(rating => {
+    Rating.find({ where: { mealId, userId } })
+      .then((rating) => {
         if (!rating) {
-        //create rating
           Rating.create({
-            userId: userId,
-            mealId: mealId,
-            ratings: ratings,
+            userId,
+            mealId,
+            ratings,
           }).then((newRate) => {
-            updateMeal(newRate, mealId)
-            res.status(200).send(newRate)
-          })
+            updateMeal(newRate, mealId);
+            res.status(200).send(newRate);
+          });
         } else {
           // update existing rating
           rating.update({
-            ratings: ratings
+            ratings,
           })
-          .then((updatedRating) => {
-            updateMeal(updatedRating, mealId)
-            res.status(200).send(updatedRating)
-          })
+            .then((updatedRating) => {
+              updateMeal(updatedRating, mealId);
+              res.status(200).send(updatedRating);
+            });
         }
       })
       .catch((error) => {
-        res.status(500).send(error)
-      })
-  }
-}
+        res.status(500).send(error);
+      });
+  },
+};

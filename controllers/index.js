@@ -5,5 +5,5 @@ const user = require('./user');
 module.exports = {
   meal,
   order,
-  user, 
+  user,
 };

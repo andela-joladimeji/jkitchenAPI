@@ -1,4 +1,4 @@
-const User = require('../models').User;
+const { User } = require('../models');
 const auth = require('../middleware/authentication');
 const passport = require('passport');
 
@@ -10,7 +10,7 @@ module.exports = {
   * @param {object} response - response object served to the client
   * @returns {promise} user - new user created
   */
-  signup(req, res) {    
+  signup(req, res) {
     const userDetails = req.body;
     User
       .find({
@@ -20,7 +20,7 @@ module.exports = {
       })
       .then((existingUser) => {
         if (existingUser) {
-          return res.status(422).send({ message: 'That email address is already in use.' })
+          return res.status(422).send({ message: 'That email address is already in use.' });
         }
         const userToCreate = {
           name: userDetails.name,
@@ -29,7 +29,7 @@ module.exports = {
           phoneNumber: userDetails.phoneNumber,
           imageURL: userDetails.imageURL,
           socialMediaLinks: userDetails.socialMediaLinks,
-          hashedPassword: auth.hashPassword(userDetails.password)
+          hashedPassword: auth.hashPassword(userDetails.password),
         };
         if (userDetails.role) {
           userToCreate.role = userDetails.role;
@@ -50,29 +50,28 @@ module.exports = {
   * @returns {json} user - user details
   */
   signin(req, res) {
-    const userDetails = req.body
+    const userDetails = req.body;
     if (!userDetails.email) {
-      return res.status(422).send({ message: 'You must enter an email address.' })
+      return res.status(422).send({ message: 'You must enter an email address.' });
     }
     if (!userDetails.password) {
-      return res.status(422).send({ message: 'You must enter a password.' })
+      return res.status(422).send({ message: 'You must enter a password.' });
     }
-    passport.authenticate('local', {session: false}, function(err, user, info){
+    passport.authenticate('local', { session: false }, (err, user, info) => {
       if (err) { return res.status(500).json(err); }
       if (user) {
         return res.status(200).send({
           data: user,
-          token: auth.generateToken(user)
+          token: auth.generateToken(user),
         });
-      } else {
-        return res.status(422).json(info);
       }
+      return res.status(422).json(info);
     })(req, res);
   },
   signout(req, res) {
     res.redirect('/');
   },
-   /**
+  /**
   * @description - Updates user details
   * @param {object} request - request object received from the client
   * @param {object} response - response object served to the client
@@ -81,13 +80,13 @@ module.exports = {
   updateUser(req, res) {
     User
       .findById(req.params.userId)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.json({
-            message: 'User does not exist'
-          })
+            message: 'User does not exist',
+          });
         }
-        const userDetails = req.body
+        const userDetails = req.body;
         const hashedPasswordToSave = userDetails.password ? bcrypt.hashSync(userDetails.password, 12) : user.hashedPassword
         user
           .update({
@@ -98,20 +97,19 @@ module.exports = {
             phoneNumber: userDetails.phoneNumber || user.phoneNumber,
             imageURL: userDetails.imageURL || user.imageURL,
             socialMediaLinks: userDetails.socialMediaLinks || user.socialMediaLinks,
-            hashedPassword: hashedPasswordToSave
+            hashedPassword: hashedPasswordToSave,
           })
           .then((updatedUser) => {
-            res.status(200).send(updatedUser)
-          })
+            res.status(200).send(updatedUser);
+          });
       })
       .catch((error) => {
         res.json({
-          message: error
-        })
-      })
+          message: error,
+        });
+      });
   },
   validator(req, res, next) {
-    const userDetails = req.body;
     req.checkBody('email', 'You must enter an email address.').notEmpty().isEmail().withMessage('Provide a valid email');
     req.checkBody('name', 'You must enter your full name.').notEmpty();
     req.checkBody('username', 'You must enter a username.').notEmpty();
@@ -122,16 +120,14 @@ module.exports = {
     const validatorErrors = req.validationErrors();
     if (validatorErrors) {
       const response = [];
-      validatorErrors.forEach(function(err) {
+      validatorErrors.forEach((err) => {
         response.push(err.msg);
       });
-      return res.status(422).json({ message: response});
-    } else {
-      return next();
+      return res.status(422).json({ message: response });
     }
+    return next();
   },
   validateBeforeUpdate(req, res, next) {
-    const userDetails = req.body;
     req.checkBody('email', 'You must enter an email address.').optional().isEmail().withMessage('Provide a valid email');
     req.checkBody('name', 'You must enter your full name.').optional();
     req.checkBody('username', 'You must enter a username.').optional();
@@ -144,12 +140,11 @@ module.exports = {
     const validatorErrors = req.validationErrors();
     if (validatorErrors) {
       const response = [];
-      validatorErrors.forEach(function(err) {
+      validatorErrors.forEach((err) => {
         response.push(err.msg);
       });
       return res.status(422).json({ message: response});
-    } else {
-      return next();
     }
-  }
-}
+    return next();
+  },
+};
